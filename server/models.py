@@ -10,13 +10,16 @@ metadata = MetaData(naming_convention={
 
 db = SQLAlchemy(metadata=metadata)
 
-class Exercize(db.Model):
+class Exercise(db.Model):
     __tablename__ = 'exercises'
 
     id =  db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     category = db.Column(db.String)
     equipment_needed = db.Column(db.Boolean)
+
+    workout_exercises = db.relationship('WorkoutExercise', back_populates = 'exercise')
+    workouts = association_proxy('workout_exercises', 'workout', creator=lambda workout_obj: WorkoutExercise(workout=workout_obj))
 
 class Workout(db.Model):
     __tablename__ = 'workouts'
@@ -26,7 +29,11 @@ class Workout(db.Model):
     duration_minutes = db.Column(db.Integer)
     notes = db.Column(db.Text)
 
-class WorkoutExercises(db.Model):
+    workout_exercises = db.relationship('WorkoutExercise', back_populates = 'workout')
+    exercises = association_proxy('workout_exercises', 'exercise', creator=lambda exercise_obj: WorkoutExercise(exercise=exercise_obj))
+
+
+class WorkoutExercise(db.Model):
     __tablename__ = 'workout_exercises'
 
     id =  db.Column(db.Integer, primary_key=True)
@@ -35,6 +42,11 @@ class WorkoutExercises(db.Model):
     reps = db.Column(db.Integer)
     sets = db.Column(db.Integer)
     duration_seconds = db.Column(db.Integer)
+
+    exercise = db.relationship('Exercise', back_populates = 'workout_exercises')
+    workout = db.relationship('Workout', back_populates = 'workout_exercises')
+
+
 
 
 
