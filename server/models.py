@@ -20,7 +20,7 @@ class Exercise(db.Model):
 
     @validates('equipment_needed')
     def validate_equipment_needed(self, key, value):
-        if value not in ["dumbbells", "free weights", "treadmill", "exercise bike"]:
+        if value not in ["dumbbells", "free weights", "treadmill", "exercise bike", "exercise mat"]:
             raise ValueError("Equipment needed must be available")
 
     workout_exercises = db.relationship('WorkoutExercise', back_populates = 'exercise')
@@ -36,7 +36,7 @@ class Workout(db.Model):
 
     @validates('duration_minutes')
     def validate_workout_details(self, key, value):
-        if value >= 0:
+        if value <= 0:
             raise ValueError('Value must be a positive integer')
         return value
 
@@ -56,7 +56,7 @@ class WorkoutExercise(db.Model):
 
     @validates('reps', 'sets', 'duration_seconds')
     def validate_workout_details(self, key, value):
-        if value >= 0:
+        if value <= 0:
             raise ValueError('Value must be a positive integer')
         return value
 
