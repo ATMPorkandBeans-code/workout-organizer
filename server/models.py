@@ -18,10 +18,10 @@ class Exercise(db.Model):
     category = db.Column(db.String)
     equipment_needed = db.Column(db.Boolean)
 
-    @validates('equipment_needed')
+    @validates('category')
     def validate_equipment_needed(self, key, value):
-        if value not in ["dumbbells", "free weights", "treadmill", "exercise bike", "exercise mat"]:
-            raise ValueError("Equipment needed must be available")
+        if value not in ["Cardio", "Weight Training", "Body Weight Exercise", ]:
+            raise ValueError("Category must be available")
 
     workout_exercises = db.relationship('WorkoutExercise', back_populates = 'exercise')
     workouts = association_proxy('workout_exercises', 'workout', creator=lambda workout_obj: WorkoutExercise(workout=workout_obj))

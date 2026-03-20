@@ -8,10 +8,10 @@ with app.app_context():
     Workout.query.delete()
     WorkoutExercise.query.delete()
 
-    exercise1 = Exercise(id=1, name="Flat Push", category="Lift", equipment_needed="free weights")
-    exercise2 = Exercise(id=2, name="Hammer Throw", category="Lift", equipment_needed="dumbbells")
-    exercise3 = Exercise(id=3, name="Run", category="Cardio", equipment_needed="treadmill")
-    exercise4 = Exercise(id=4, name="Push Up", category="Cardio", equipment_needed="exercise mat")
+    exercise1 = Exercise(id=1, name="Flat Push", category="Lift", equipment_needed=False)
+    exercise2 = Exercise(id=2, name="Hammer Throw", category="Lift", equipment_needed=True)
+    exercise3 = Exercise(id=3, name="Run", category="Cardio", equipment_needed=True)
+    exercise4 = Exercise(id=4, name="Push Up", category="Cardio", equipment_needed=True)
 
     db.session.add_all([exercise1, exercise2, exercise3, exercise4])
     db.session.commit()
