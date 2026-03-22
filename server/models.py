@@ -3,7 +3,7 @@ from sqlalchemy.orm import validates
 from sqlalchemy import MetaData, CheckConstraint
 from sqlalchemy.ext.associationproxy import association_proxy
 from datetime import datetime
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, EXCLUDE
 
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
@@ -21,7 +21,7 @@ class Exercise(db.Model):
 
     @validates('category')
     def validate_category(self, key, value):
-        if value not in ["Cardio", "Weight Training", "Body Weight Exercise", ]:
+        if value not in ["Cardio", "Weight Training", "Body Weight Exercise"]:
             raise ValueError("Category must be available")
         return value
 
@@ -33,11 +33,14 @@ class Exercise(db.Model):
     
 class ExerciseSchema(Schema):
     id = fields.Int()
-    name = fields.String()
+    name = fields.String(required=True)
     category = fields.String()
     equipment_needed = fields.Boolean()
 
     workout_exercises = fields.List(fields.Nested(lambda: WorkoutExerciseSchema(exclude=("exercise",))))
+
+    class Meta:
+        unknown = EXCLUDE
 
 
 class Workout(db.Model):
@@ -62,11 +65,14 @@ class Workout(db.Model):
     
 class WorkoutSchema(Schema):
     id = fields.Integer()
-    date = fields.Date()
+    date = fields.Date(required=True)
     duration_minutes = fields.Integer()
     notes = fields.String()
 
     workout_exercises = fields.List(fields.Nested(lambda: WorkoutExerciseSchema(exclude=("workout",))))
+
+    class Meta:
+        unknown = EXCLUDE
 
 
 class WorkoutExercise(db.Model):
@@ -100,6 +106,9 @@ class WorkoutExerciseSchema(Schema):
 
     exercise = fields.Nested(lambda: ExerciseSchema(exclude=('workout_exercises',)))
     workout = fields.Nested(lambda: WorkoutSchema(exclude=('workout_exercises',)))
+
+    class Meta:
+        unknown = EXCLUDE
 
 
 
